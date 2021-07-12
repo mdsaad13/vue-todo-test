@@ -37,7 +37,9 @@
       </div>
     </nav>
     <div class="container-fluid">
-      <router-view />
+      <transition name="fade" mode="out-in">
+        <router-view />
+      </transition>
     </div>
   </div>
 </template>
@@ -49,5 +51,18 @@
 
 .navbar-light .navbar-nav .nav-link {
   font-weight: bold;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.3s;
+  transition-property: height, opacity;
+  transition-timing-function: ease;
+  overflow: hidden;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 </style>
