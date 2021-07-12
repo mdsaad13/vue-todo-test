@@ -1,28 +1,58 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="container-fluid">
+    <div class="row">
+      <List :proptodo="todo" class="col-lg-8" />
+      <Form class="col-lg-4" />
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import List from "./components/List.vue";
+import Form from "./components/Form.vue";
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
-</script>
+    List,
+    Form,
+  },
+  data: () => ({
+    todo: [],
+  }),
+  mounted() {
+    this.restoreTodo();
 
-<style>
+    // new todo added
+    this.$root.$on("FormSubmit", (newitem) => {
+      this.todo.unshift(newitem);
+      this.updateTodoInLocalStorage();
+    });
+
+    // todo deleted
+    this.$root.$on("DeleteItem", (indexToDelete) => {
+      this.todo.splice(indexToDelete, 1);
+      this.updateTodoInLocalStorage();
+    });
+
+    // todo edited
+    this.$root.$on("FormEditSubmit", () => {
+      this.updateTodoInLocalStorage();
+    });
+  },
+  methods: {
+    restoreTodo() {
+      this.todo = localStorage.getItem("todo-list")
+        ? JSON.parse(localStorage.getItem("todo-list"))
+        : [];
+    },
+    updateTodoInLocalStorage() {
+      localStorage.setItem("todo-list", JSON.stringify(this.todo));
+    },
+  },
+};
+</script>
+<style >
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  margin: 60px 0;
 }
 </style>
